@@ -49,21 +49,21 @@ filtered_id AS(
       	a.last_price,
       	-- Группировка по регионам
       	CASE
-        	WHEN f.city_id = '6X8I' THEN 'Санкт-Петербург'
-        	ELSE 'ЛенОбл'
+            WHEN f.city_id = '6X8I' THEN 'Санкт-Петербург'
+            ELSE 'ЛенОбл'
       	END AS region,
       	-- Группировка про времени активности объявлений
       	CASE
-        	WHEN a.days_exposition BETWEEN 1 AND 30 THEN 'месяц'
-        	WHEN a.days_exposition BETWEEN 31 AND 90 THEN 'квартал'
-        	WHEN a.days_exposition BETWEEN 91 AND 180 THEN 'полгода'
-        	ELSE 'больше полугода'
+            WHEN a.days_exposition BETWEEN 1 AND 30 THEN 'месяц'
+            WHEN a.days_exposition BETWEEN 31 AND 90 THEN 'квартал'
+            WHEN a.days_exposition BETWEEN 91 AND 180 THEN 'полгода'
+            ELSE 'больше полугода'
      	 END AS ad_activity,
      	 a.last_price / f.total_area AS price_per_sqm,
      	 CASE 
-	     	WHEN a.days_exposition IS NULL THEN 'Не закрыто'
-	     	ELSE 'Закрыто' 
-	     END as ad_status
+	     WHEN a.days_exposition IS NULL THEN 'Не закрыто'
+	     ELSE 'Закрыто' 
+	 END as ad_status
     FROM
       	real_estate.flats AS f
     	INNER JOIN real_estate.advertisement AS a USING (id)
@@ -73,24 +73,24 @@ filtered_id AS(
       	AND f.id IN (SELECT id FROM filtered_id)
 )
 SELECT
-	region AS Регион,
-  	ad_activity AS Активность_объявлений,
-  	ad_status AS Статус_объявлений,
-  	-- Подсчитываем количество объявлений в каждой группе
-  	COUNT(*) AS Кол_объявлений,
-  	-- Вычисляем долю объявлений от общего числа объявлений в каждом регионе
-  	ROUND(COUNT(*)::NUMERIC * 100.0 / SUM(COUNT(*)::NUMERIC) OVER (PARTITION BY region), 2) AS Доля_объявлений_по_рег,
-  	-- Вычисляем долю объявлений от общего количества объявлений в выборке
-   	ROUND(COUNT(*)::NUMERIC * 100.0 / SUM(COUNT(*)::NUMERIC) OVER (), 2) AS Доля_объявлений_общ,
-   	-- Вычисляем среднюю цену за квадратный метр
-  	ROUND(AVG(price_per_sqm)::NUMERIC, 2) AS Ср_цена_за_м2,
-  	-- Вычисляем среднюю общую площадь
-  	ROUND(AVG(total_area)::NUMERIC, 2) AS Ср_общ_площадь,
-  	-- Вычисляем среднюю высоту потолков
-  	ROUND(AVG(ceiling_height)::NUMERIC, 2) AS Ср_высота_потолка,
-  	-- Вычисляем долю студий (квартир с 1 комнатой)
-  	ROUND(AVG(CASE WHEN rooms = 1 THEN 1.0 ELSE 0.0 END) * 100, 2) AS Доля_кв_студий,
-  	-- Вычисляем среднее количество балконов
+    region AS Регион,
+    ad_activity AS Активность_объявлений,
+    ad_status AS Статус_объявлений,
+    -- Подсчитываем количество объявлений в каждой группе
+    COUNT(*) AS Кол_объявлений,
+    -- Вычисляем долю объявлений от общего числа объявлений в каждом регионе
+    ROUND(COUNT(*)::NUMERIC * 100.0 / SUM(COUNT(*)::NUMERIC) OVER (PARTITION BY region), 2) AS Доля_объявлений_по_рег,
+    -- Вычисляем долю объявлений от общего количества объявлений в выборке
+    ROUND(COUNT(*)::NUMERIC * 100.0 / SUM(COUNT(*)::NUMERIC) OVER (), 2) AS Доля_объявлений_общ,
+    -- Вычисляем среднюю цену за квадратный метр
+    ROUND(AVG(price_per_sqm)::NUMERIC, 2) AS Ср_цена_за_м2,
+    -- Вычисляем среднюю общую площадь
+    ROUND(AVG(total_area)::NUMERIC, 2) AS Ср_общ_площадь,
+    -- Вычисляем среднюю высоту потолков
+    ROUND(AVG(ceiling_height)::NUMERIC, 2) AS Ср_высота_потолка,
+    -- Вычисляем долю студий (квартир с 1 комнатой)
+    ROUND(AVG(CASE WHEN rooms = 1 THEN 1.0 ELSE 0.0 END) * 100, 2) AS Доля_кв_студий,
+    -- Вычисляем среднее количество балконов
     ROUND(AVG(balcony)::NUMERIC, 2) AS Ср_кол_балконов,
     -- Вычисляем среднюю площадь кухни
     ROUND(AVG(kitchen_area)::NUMERIC, 2) AS Ср_площадь_кухни,
@@ -100,19 +100,19 @@ SELECT
     ROUND(AVG(rooms)::NUMERIC, 2) AS Ср_кол_комнат,
     -- Вычисляем расстояние до ближайшего аэропорта, в км.
     ROUND(AVG(airports_nearest/1000)::NUMERIC, 2) AS Км_до_аэропорта,
-	-- Находим число парков в радиусе трёх километров
-	ROUND(AVG(parks_around3000)::NUMERIC, 2) AS Парков_рядом,
-	-- Находим число водоёмов в радиусе трёх километров
-	ROUND(AVG(ponds_around3000)::NUMERIC, 2) AS Водоём_рядом
+    -- Находим число парков в радиусе трёх километров
+    ROUND(AVG(parks_around3000)::NUMERIC, 2) AS Парков_рядом,
+    -- Находим число водоёмов в радиусе трёх километров
+    ROUND(AVG(ponds_around3000)::NUMERIC, 2) AS Водоём_рядом
 FROM
-	prepared_data
+    prepared_data
 GROUP BY
-  	region,
-  	ad_activity,
-  	ad_status
+    region,
+    ad_activity,
+    ad_status
 ORDER BY
-  	region,
-  	ad_activity;
+    region,
+    ad_activity;
 
 ------------------+---------------------+-----------------+--------------+----------------------+-------------------+-------------+--------------+-----------------+--------------+---------------+----------------+-------+-------------+---------------+------------+------------+
 --     Регион     |Активность_объявлений|Статус_объявлений|Кол_объявлений|Доля_объявлений_по_рег|Доля_объявлений_общ|Ср_цена_за_м2|Ср_общ_площадь|Ср_высота_потолка|Доля_кв_студий|Ср_кол_балконов|Ср_площадь_кухни|Ср_этаж|Ср_кол_комнат|Км_до_аэропорта|Парков_рядом|Водоём_рядом|
@@ -381,8 +381,8 @@ settlement_stats AS (
     HAVING 
     	COUNT(*) >= 50
     	-- При количестве объявлений меньше 50 данные могут быть недостаточно статистически значимыми для того,
-   		-- чтобы делать надёжные выводы о рыночных тенденциях в этом конкретном населённом пункте. 
-   		-- Малые выборки более подвержены случайным колебаниям и выбросам, что может привести к неверным результатам.
+   	-- чтобы делать надёжные выводы о рыночных тенденциях в этом конкретном населённом пункте. 
+   	-- Малые выборки более подвержены случайным колебаниям и выбросам, что может привести к неверным результатам.
 )
 SELECT 
     ss.settlement,
@@ -404,22 +404,22 @@ SELECT
     -- Ранжируем населенные пункты по проценту быстрых продаж
     RANK() OVER (ORDER BY (COUNT(CASE WHEN pd.days_exposition <= 30 THEN 1 END)::numeric / ss.total_ads) DESC) AS rank_by_fast_sales
 FROM 
-	settlement_stats AS ss
-	JOIN prepared_data AS pd ON ss.settlement = pd.settlement AND ss.type = pd.type
+    settlement_stats AS ss
+    JOIN prepared_data AS pd ON ss.settlement = pd.settlement AND ss.type = pd.type
 GROUP BY 
-	ss.settlement,
-	ss.total_ads,
-	ss.open_ads,
-	ss.closed_ads,
-	ss.avg_price_sqm,
-	ss.avg_area,
-	ss.avg_days_on_market,
-	ss.type
-	-- Проводим сортировку по fast_sales_percentage, первые в рейтинге населенные пункты имеют более высокий процент продаж
+    ss.settlement,
+    ss.total_ads,
+    ss.open_ads,
+    ss.closed_ads,
+    ss.avg_price_sqm,
+    ss.avg_area,
+    ss.avg_days_on_market,
+    ss.type
+    -- Проводим сортировку по fast_sales_percentage, первые в рейтинге населенные пункты имеют более высокий процент продаж
 ORDER BY 
-	closed_ads_percentage DESC
+    closed_ads_percentage DESC
 LIMIT 
-	15;
+    15;
 
 ------------------+-------+---------+--------+----------+---------------------+---------------------+-------------+--------+------------------+-----------+------------------+
 --   settlement   |type   |total_ads|open_ads|closed_ads|closed_ads_percentage|fast_sales_percentage|avg_price_sqm|avg_area|avg_days_on_market|rank_by_ads|rank_by_fast_sales|
@@ -465,7 +465,7 @@ LIMIT
 -- в то время как в Ломоносове (229.55 дней), Сестрорецке (214.81 дней) и Красном Селе (205.81 дней) недвижимость продаётся значительно дольше.
 
 
--- Общие выводы и рекомендации
+-- Общие выводы и рекомендации:
 -- Рынок недвижимости Санкт-Петербурга более дорогой и динамичный, с большим разбросом в ценах и сроках экспозиции.
 -- Рынок недвижимости Ленинградской области более стабильный по цене и срокам, при этом цена за квадратный метр ниже чем в Санкт-Петербурге.
 -- На время экспозиции влияют как характеристики объекта (площадь, цена за квадратный метр, количество комнат), так и внешние факторы (регион).
@@ -477,11 +477,3 @@ LIMIT
 -- В Ленинградской области Мурино выделяется как поселок с самым активным рынком недвижимости (большое количество объявлений и высокая доля закрытых сделок), средними ценами и быстрыми продажами.
 -- Акцентировать рекламу на период с февраля по ноябрь, особенно в октябре и ноябре, когда наибольшая активность продавцов.
 -- Проводить кампании для покупателей в период с сентября по январь, когда сделки закрываются активнее.
-
-
-
-
-
-
-
-

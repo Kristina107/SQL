@@ -14,7 +14,7 @@
 
 -- Рассчитаем долю игроков, которые преобретают внутриигровое имущество за реальные деньги 
 SELECT
-		-- общее количество игроков
+	-- общее количество игроков
     COUNT(id) AS total_players,
     	-- количество платящих игроков 
     COUNT(CASE WHEN payer = 1 THEN id END) AS paying_players,
@@ -44,11 +44,11 @@ SELECT
     ROUND(AVG(payer)*100.0, 2) AS paying_percentage
 FROM
     fantasy.users AS u
-	JOIN fantasy.race AS r USING(race_id)
+    JOIN fantasy.race AS r USING(race_id)
 GROUP BY
     r.race
 ORDER BY 
-	paying_players DESC;
+    paying_players DESC;
 
 -----------------+--------------+-------------+-----------------+
 -- character_race|paying_players|total_players|paying_percentage|
@@ -70,7 +70,7 @@ ORDER BY
 -- 2.1. Статистические показатели по полю amount:
 
 SELECT
-   		-- общее количество покупок
+   	-- общее количество покупок
     COUNT(amount) AS total_purchases,
     	-- суммарная стоимость всех покупок
     SUM(amount) AS total_amount,
@@ -96,24 +96,24 @@ FROM
 
 -- статистические показатели по полю amount, когда amount > 0
 SELECT
-   		-- общее количество покупок
+    -- общее количество покупок
     COUNT(amount) AS total_purchases,
-    	-- суммарная стоимость всех покупок
+    -- суммарная стоимость всех покупок
     SUM(amount) AS total_amount,
-    	-- минимальная стоимость покупки
+    -- минимальная стоимость покупки
     MIN(amount) AS min_amount,   
-    	-- максимальная стоимость покупки
+    -- максимальная стоимость покупки
     MAX(amount) AS max_amount, 
-    	-- среднее значение стоимости покупки
+    -- среднее значение стоимости покупки
     ROUND(AVG(amount)::numeric, 1) AS avg_amount,   
-    	-- медиана стоимости покупки
+    -- медиана стоимости покупки
     ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY amount)::numeric, 2) AS mediana_amount, 
-    	-- среднее отклонение стоимости покупки
+    -- среднее отклонение стоимости покупки
     ROUND(STDDEV(amount)::numeric, 2) AS std_dev_amount                                   
 FROM
     fantasy.events
 WHERE 
-	amount > 0;
+    amount > 0;
    
 ------------------+------------+----------+----------+----------+--------------+--------------+   
 -- total_purchases|total_amount|min_amount|max_amount|avg_amount|mediana_amount|std_dev_amount|
@@ -132,21 +132,21 @@ SELECT
 FROM
     fantasy.events
 WHERE 
-	amount = 0;
+    amount = 0;
 
 -------------------+---------------+---------------+-------------+-----------+--------+------------+
--- 	transaction_id | 		id	   | 		date   |	 time	 | item_code | amount |  seller_id |
+--  transaction_id | 	   id	   | 	  date     |	 time	 | item_code | amount |  seller_id |
 -------------------+---------------+---------------+-------------+-----------+--------+------------+
--- 		2586715141 |	92-3566837 |	2020-08-17 |	14:07:36 |		6010 |		0 |		888991 |
--- 		2885187469 |	27-1474866 |	2020-08-24 |	06:28:53 |		6010 |		0 |		888986 |
--- 		3052146541 |	25-9689267 |	2020-08-01 |	11:01:52 |		6010 |		0 |		888986 |
--- 		3126590869 |	33-4012373 |	2021-04-01 |	18:11:06 |		6010 |		0 |		888910 |
--- 		3149709853 |	36-7554477 |	2020-12-17 |	18:06:39 |		6010 |		0 |		888991 |
--- 		3252349957 |	70-9877808 |	2021-03-29 |	19:47:37 |		6010 |		0 |		888903 |
--- 		3280995553 |	94-1237794 |	2021-03-19 |	20:22:22 |		6010 |		0 |		888912 |
--- 		3399725101 |	46-2806109 |	2020-08-18 |	07:12:40 |		6010 |		0 |		888987 |
--- 		3890021845 |	05-4786250 |	2020-09-07 |	19:43:39 |		6010 |		0 |		888993 |
--- 		3890168257 |	05-4786250 |	2020-11-01 |	17:33:55 |		6010 |		0 |		888986 |
+-- 	2586715141 |	92-3566837 |	2020-08-17 |	14:07:36 |	6010 |	    0 |	    888991 |
+-- 	2885187469 |	27-1474866 |	2020-08-24 |	06:28:53 |	6010 |	    0 |	    888986 |
+-- 	3052146541 |	25-9689267 |	2020-08-01 |	11:01:52 |	6010 |	    0 |	    888986 |
+-- 	3126590869 |	33-4012373 |	2021-04-01 |	18:11:06 |	6010 |	    0 |	    888910 |
+-- 	3149709853 |	36-7554477 |	2020-12-17 |	18:06:39 |	6010 |	    0 |	    888991 |
+-- 	3252349957 |	70-9877808 |	2021-03-29 |	19:47:37 |	6010 |	    0 |	    888903 |
+-- 	3280995553 |	94-1237794 |	2021-03-19 |	20:22:22 |	6010 |	    0 |	    888912 |
+-- 	3399725101 |	46-2806109 |	2020-08-18 |	07:12:40 |	6010 |	    0 |	    888987 |
+-- 	3890021845 |	05-4786250 |	2020-09-07 |	19:43:39 |	6010 |	    0 |	    888993 |
+-- 	3890168257 |	05-4786250 |	2020-11-01 |	17:33:55 |	6010 |	    0 |	    888986 |
 -------------------+---------------+---------------+-------------+-----------+--------+------------+
 
 -- Находим дополнительные данные о покупках с нулевой стоимостью и их долю от общего числа покупок
@@ -162,13 +162,13 @@ SELECT
     -- доля покупок с нулевой стоимостью от общего числа покупок в процентах
     ROUND(COUNT(amount)::NUMERIC / (SELECT COUNT(transaction_id) FROM fantasy.events)::NUMERIC*100.0, 2) AS zero_amount_percent
 FROM
-	fantasy.events AS e
-	JOIN fantasy.items AS i USING(item_code)
+    fantasy.events AS e
+    JOIN fantasy.items AS i USING(item_code)
 WHERE 
-	amount = 0
+    amount = 0
 GROUP BY 
-	game_items,
-	item_code;
+    game_items,
+    item_code;
 
 -------------------+-----------+-------------+-------------------+--------------+---------------------+
 --  game_items     | item_code | zero_amount | total_zero_amount | total_amount | zero_amount_percent |
@@ -189,26 +189,26 @@ WITH player_stats AS (
     SELECT
     	u.id,
         u.payer,
-        	-- общее количество покупок 
+        -- общее количество покупок 
         COUNT(e.transaction_id) AS total_purchases,
-        	-- суммарная стоимость покупок
+        -- суммарная стоимость покупок
         COALESCE(SUM(e.amount), 0) AS total_amount
     FROM
         fantasy.users AS u
-   		LEFT JOIN fantasy.events AS e ON u.id = e.id 
-   WHERE		
-   		e.amount > 0 OR amount IS NULL
+   	LEFT JOIN fantasy.events AS e ON u.id = e.id 
+    WHERE		
+   	e.amount > 0 OR amount IS NULL
     GROUP BY
     	u.id,
         u.payer
 )
 SELECT
     payer,
-    	-- количество игроков в каждой группе 
+    -- количество игроков в каждой группе 
     COUNT(id) AS total_players,
-    	-- среднее количество покупок на одного игрока
+    -- среднее количество покупок на одного игрока
     ROUND(AVG(total_purchases), 2) AS avg_purchases_per_player,
-    	-- средняя суммарная стоимость покупок на одного игрока
+    -- средняя суммарная стоимость покупок на одного игрока
     ROUND(AVG(total_amount)::numeric, 2) AS avg_amount_per_player
 FROM
     player_stats
@@ -232,7 +232,7 @@ GROUP BY
 WITH total_sales AS (
     SELECT
         item_code,
-        	-- общее количество продаж
+        -- общее количество продаж
         COUNT(*) AS total_sales_count
     FROM
         fantasy.events
@@ -244,7 +244,7 @@ WITH total_sales AS (
 item_players AS (
     SELECT
         item_code,
-        	-- общее количество игроков, купивших эпический предмет
+        -- общее количество игроков, купивших эпический предмет
         COUNT(DISTINCT id) AS unique_players_count
     FROM
         fantasy.events
@@ -256,22 +256,22 @@ item_players AS (
 SELECT
     i.item_code,
     i.game_items AS epic_item,
-    	-- общее количество продаж
+    -- общее количество продаж
     COALESCE(ts.total_sales_count, 0) AS total_sales_count,
-    	-- относительная доля продаж
+    -- относительная доля продаж
     ROUND(COALESCE(ts.total_sales_count, 0) * 100.0 / SUM(COALESCE(ts.total_sales_count, 0)) OVER (), 2) AS relative_sales_percentage,
-    	-- количество игроков, купивших предмет
+    -- количество игроков, купивших предмет
     COALESCE(ip.unique_players_count, 0) AS players_with_item_count,
-    	-- доля игроков купивших этот предмет
+    -- доля игроков купивших этот предмет
     ROUND(COALESCE(ip.unique_players_count, 0) * 100.0 / (SELECT COUNT(DISTINCT id) FROM events WHERE amount > 0), 2) AS players_with_item_percentage
 FROM
     fantasy.items AS i
-	LEFT JOIN total_sales AS ts USING(item_code)
-	LEFT JOIN item_players AS ip USING(item_code)
+    LEFT JOIN total_sales AS ts USING(item_code)
+    LEFT JOIN item_players AS ip USING(item_code)
 ORDER BY
     relative_sales_percentage DESC
 LIMIT
-	10;
+    10;
  
 -------------+----------------------+-------------------+---------------------------+-------------------------+------------------------------+
 -- item_code |       epic_item      | total_sales_count | relative_sales_percentage | players_with_item_count | players_with_item_percentage |
@@ -298,91 +298,91 @@ LIMIT
 -- Для каждой расы посчитаем общее количество зарегистрированных игроков
 WITH total_players AS (
 	SELECT 
-		u.race_id,
-		r.race,
-			-- количество зарегистрированных игроков
-		COUNT(u.id) AS total_registered_players
+	    u.race_id,
+	    r.race,
+	    -- количество зарегистрированных игроков
+	    COUNT(u.id) AS total_registered_players
 	FROM 
-		fantasy.race AS r
-		LEFT JOIN fantasy.users AS u ON r.race_id = u.race_id
+	    fantasy.race AS r
+	    LEFT JOIN fantasy.users AS u ON r.race_id = u.race_id
 	GROUP BY 
-		u.race_id,
-		r.race
+	    u.race_id,
+	    r.race
 ),
 -- Для каждой расы посчитаем количество игроков, которые совершили покупку, и долю платящих игроков среди них
 total_paying_players AS ( 
-		SELECT 
-		u.race_id,
-			-- количество игроков, которые совершили покупку
-		COUNT(DISTINCT CASE WHEN u.payer = 1 THEN u.id END) AS paying_players,
-			-- доля игроков, которые совершили покупку
-		ROUND((COUNT(DISTINCT CASE WHEN u.payer = 1 THEN u.id END) * 100.0) / COUNT(DISTINCT u.id), 1) AS paying_percentage
+	SELECT 
+	    u.race_id,
+	    -- количество игроков, которые совершили покупку
+	    COUNT(DISTINCT CASE WHEN u.payer = 1 THEN u.id END) AS paying_players,
+	    -- доля игроков, которые совершили покупку
+	    ROUND((COUNT(DISTINCT CASE WHEN u.payer = 1 THEN u.id END) * 100.0) / COUNT(DISTINCT u.id), 1) AS paying_percentage
 	FROM 
-		fantasy.events AS e
-		LEFT JOIN fantasy.users AS u ON u.id = e.id
+	    fantasy.events AS e
+	    LEFT JOIN fantasy.users AS u ON u.id = e.id
 	WHERE 
-		amount > 0
+	    amount > 0
 	GROUP BY 
-		u.race_id	
+	    u.race_id	
 ),
 -- Доля платящих игроков, которые совершили покупку
 percent_events_paying_players AS (
 	SELECT 
-   	 u.race_id,
-    	-- количество уникальных платящих игроков, которые совершили покупку
-   	 COUNT(DISTINCT e.id) AS events_paying_players,
-    	-- общее количество уникальных игроков
-   	 COUNT(DISTINCT u.id) AS total_players,
-   	 -- доля платящих игроков, которые совершили покупку
-   	 ROUND(CASE WHEN COUNT(DISTINCT u.id) > 0 THEN COUNT(DISTINCT e.id)::numeric / COUNT(DISTINCT u.id)::numeric * 100.0 ELSE 0 END, 2) AS percent_paying_players
+   	     u.race_id,
+    	    -- количество уникальных платящих игроков, которые совершили покупку
+   	     COUNT(DISTINCT e.id) AS events_paying_players,
+    	    -- общее количество уникальных игроков
+   	     COUNT(DISTINCT u.id) AS total_players,
+   	     -- доля платящих игроков, которые совершили покупку
+   	     ROUND(CASE WHEN COUNT(DISTINCT u.id) > 0 THEN COUNT(DISTINCT e.id)::numeric / COUNT(DISTINCT u.id)::numeric * 100.0 ELSE 0 END, 2) AS percent_paying_players
 	FROM 
-   		fantasy.users AS u
-		LEFT JOIN fantasy.events AS e ON u.id = e.id AND e.amount > 0
+   	    fantasy.users AS u
+	    LEFT JOIN fantasy.events AS e ON u.id = e.id AND e.amount > 0
 	GROUP BY 
-    	u.race_id	
+    	    u.race_id	
 ),
 -- Анализ активности игроков с учётом расы персонажа
 avg_analitic AS (
-SELECT
-	u.race_id,
-		--среднее количество покупок на одного игрока
-	COUNT(e.transaction_id) / COUNT(DISTINCT u.id) AS avg_purchases_per_player,	
-		--средняя стоимость одной покупки на одного игрока
-	ROUND(AVG(e.amount)::numeric, 2) AS avg_amount, 
-		--средняя суммарная стоимость всех покупок на одного игрока
-	ROUND(SUM(e.amount)::numeric / COUNT(DISTINCT u.id)::numeric, 2) AS avg_amount_per_player
-FROM
-	fantasy.events AS e
-	LEFT JOIN fantasy.users AS u ON u.id = e.id
-WHERE 
-    e.amount > 0
-GROUP BY 
-	u.race_id
+        SELECT
+            u.race_id,
+            --среднее количество покупок на одного игрока
+            COUNT(e.transaction_id) / COUNT(DISTINCT u.id) AS avg_purchases_per_player,	
+             --средняя стоимость одной покупки на одного игрока
+            ROUND(AVG(e.amount)::numeric, 2) AS avg_amount, 
+            --средняя суммарная стоимость всех покупок на одного игрока
+            ROUND(SUM(e.amount)::numeric / COUNT(DISTINCT u.id)::numeric, 2) AS avg_amount_per_player
+	FROM
+            fantasy.events AS e
+            LEFT JOIN fantasy.users AS u ON u.id = e.id
+	WHERE 
+            e.amount > 0
+	GROUP BY 
+            u.race_id
 )	
 SELECT
-	tp.race_id,
-	tp.race,
-		-- количество зарегистрированных игроков
-	total_registered_players,
-		-- количество игроков, которые совершили покупку
-	paying_players,
-		-- доля игроков, которые совершили покупку
-	paying_percentage,
-		-- доля платящих игроков от количества игроков, которые совершили покупки
-	percent_paying_players,
-		-- среднее количество покупок на одного игрока
-	avg_purchases_per_player,
-		-- средняя стоимость одной покупки на одного игрока
-	avg_amount,
-		-- средняя суммарная стоимость всех покупок на одного игрока
-	avg_amount_per_player	
+    tp.race_id,
+    tp.race,
+    -- количество зарегистрированных игроков
+    total_registered_players,
+    -- количество игроков, которые совершили покупку
+    paying_players,
+    -- доля игроков, которые совершили покупку
+    paying_percentage,
+    -- доля платящих игроков от количества игроков, которые совершили покупки
+    percent_paying_players,
+    -- среднее количество покупок на одного игрока
+    avg_purchases_per_player,
+    -- средняя стоимость одной покупки на одного игрока
+    avg_amount,
+    -- средняя суммарная стоимость всех покупок на одного игрока
+    avg_amount_per_player	
 FROM
-	total_players AS tp
-	LEFT JOIN total_paying_players AS tpp ON tp.race_id = tpp.race_id
-	LEFT JOIN percent_events_paying_players AS pepp ON tpp.race_id = pepp.race_id
-	LEFT JOIN avg_analitic AS aa ON pepp.race_id = aa.race_id
+    total_players AS tp
+    LEFT JOIN total_paying_players AS tpp ON tp.race_id = tpp.race_id
+    LEFT JOIN percent_events_paying_players AS pepp ON tpp.race_id = pepp.race_id
+    LEFT JOIN avg_analitic AS aa ON pepp.race_id = aa.race_id
 ORDER BY 
-	percent_paying_players DESC;
+    percent_paying_players DESC;
 
 ----------+--------+------------------------+--------------+-----------------+----------------------+------------------------+----------+---------------------+
 -- race_id|  race  |total_registered_players|paying_players|paying_percentage|percent_paying_players|avg_purchases_per_player|avg_amount|avg_amount_per_player|
@@ -445,13 +445,13 @@ RankedPlayers AS (
 GroupedMetrics AS (
     SELECT
         frequency_group,
-        	-- общее количество игроков
+        -- общее количество игроков
         COUNT(id) AS total_players,
-        	-- количество платящих игроков
+        -- количество платящих игроков
         COUNT(CASE WHEN payer = 1 THEN id END) AS paying_players,
-        	-- среднее количество покупок
+        -- среднее количество покупок
         ROUND(AVG(total_purchases), 2) AS avg_purchases_per_player,
-        	-- среднее количество дней между покупками
+        -- среднее количество дней между покупками
         AVG(avg_days_between_purchases) AS avg_days_between_purchases_per_player
     FROM
     	RankedPlayers
@@ -466,12 +466,12 @@ SELECT
     END AS frequency_group,
     total_players,
     paying_players,
-    	-- процент платящих игроков
+    -- процент платящих игроков
     ROUND(CAST(paying_players AS REAL)::numeric * 100 / total_players, 2) AS paying_players_percentage,
     avg_purchases_per_player,
     avg_days_between_purchases_per_player
 FROM
-	GroupedMetrics;
+    GroupedMetrics;
 
 --------------------+-------------+--------------+-------------------------+------------------------+-------------------------------------+
 -- frequency_group  |total_players|paying_players|paying_players_percentage|avg_purchases_per_player|avg_days_between_purchases_per_player|
@@ -497,26 +497,17 @@ FROM
 
 
 -- Общие выводы и рекомендации:
--- 	1.	Развивать монетизацию игры с учетом предпочтений различных рас, возможно, путем предложения персонализированных предложений или контента.
--- 	2.	Изучить поведение игроков с высокими покупками, возможно, предложить им дополнительные вознаграждения или услуги.
--- 	3.	Необходимо устранить возможные ошибки или технические проблемы, связанные с нулевыми покупками.
--- 	4.	Разработать стратегии привлечения новых платящих игроков и удержания текущих.
--- 	5.	Пересмотреть стратегию ценообразования и игровые характеристики менее продаваемых эпических предметов.
--- 	6.	Раса персонажа влияет на долю платящих игроков и количество совершаемых покупок. Рекомендую дополнительно изучить особенности поведения игроков разных рас 
---		для улучшения персонализированного маркетинга.
--- 	7.	Анализ показывает существенные различия в поведении игроков в зависимости от частоты покупок. Маркетологи могут использовать эту информацию 
+-- 	1. Развивать монетизацию игры с учетом предпочтений различных рас, возможно, путем предложения персонализированных предложений или контента.
+-- 	2. Изучить поведение игроков с высокими покупками, возможно, предложить им дополнительные вознаграждения или услуги.
+-- 	3. Необходимо устранить возможные ошибки или технические проблемы, связанные с нулевыми покупками.
+-- 	4. Разработать стратегии привлечения новых платящих игроков и удержания текущих.
+-- 	5. Пересмотреть стратегию ценообразования и игровые характеристики менее продаваемых эпических предметов.
+-- 	6. Раса персонажа влияет на долю платящих игроков и количество совершаемых покупок. Рекомендую дополнительно изучить особенности поведения игроков разных рас 
+--	для улучшения персонализированного маркетинга.
+-- 	7. Анализ показывает существенные различия в поведении игроков в зависимости от частоты покупок. Маркетологи могут использовать эту информацию 
 --      для сегментации аудитории и разработки целевых маркетинговых стратегий для каждой группы. Например, для группы с высокой частотой покупок можно 
 --      предлагать специальные предложения, бонусы или эксклюзивный контент, в то время как для группы с низкой частотой покупок могут быть эффективны другие подходы,
 --      направленные на стимулирование активности.
-
-
-
-
-
-
-
-
-
 
 
 
